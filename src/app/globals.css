@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-poltawski: 'Poltawski Nowy', serif;
+  --font-geologica: 'Geologica', serif;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter); /* Default font */
+}
+
+
+.scrl-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrl-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Font utility classes */
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+.font-poltawski {
+  font-family: var(--font-poltawski);
+}
+
+.geologica {
+  font-family: var(--font-geologica);
+}
