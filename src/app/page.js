@@ -1,4 +1,3 @@
-// components/home/Home.jsx
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -20,32 +19,17 @@ const bgImage = {
   height: '90vh',
 };
 
-function formatMessage(content) {
+const formatMessage =(content)=> {
     if (!content) return '';
 
     let formatted = content
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/🍽️\s*\*\*(.*?)\*\*/g, '<h3>🍽️ $1</h3>')
-        .replace(/^•\s*(.*?)$/gm, '<li>$1</li>')
-        .replace(/⭐\s*([\d.]+)/g, '<span class="rating">⭐ $1</span>')
-        .replace(/🔥\s*([\d.]+\/100)/g, '<span class="hype-score">🔥 $1</span>')
-        .replace(/📈\s*([\d.]+\/100)/g, '<span class="trend-score">📈 $1</span>')
-        .replace(/💲\$+/g, '')
-        .replace(/\$[\d,]+(?:-\$[\d,]+)?/g, '')
-        .replace(/Price:\s*\$[^\s\n]*/gi, '')
-        .replace(/Cost:\s*\$[^\s\n]*/gi, '')
-        .replace(/\$\$+/g, '')
-        .replace(/https?:\/\/[^\s<>"{}|\\^`[\]]+/g, function(url) {
-            return `<a href="${url}" class="details-button" target="_blank" rel="noopener noreferrer">View Details</a>`;
-        })
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+        .replace(/📅\s*\*\*(.*?)\*\*/g, '<h2>📅 $1</h2>')
+        .replace(/🍽️\s*\*\*(.*?)\*\*/g, '<h3>🍽️ $1</h3>') 
+        .replace(/^•\s*(.*?)$/gm, '<li>$1</li>') 
+        .replace(/⏰\s*(.*?Timing:.*?)/g, '<span class="time-label">⏰ $1</span>') 
+        .replace(/🔥\s*(.*?Highlights:.*?)/g, '<span class="highlight-label">🔥 $1</span>') 
         .replace(/\n/g, '<br>');
-
-    formatted = formatted
-        .replace(/\s+<br>/g, '<br>')
-        .replace(/<br>\s+/g, '<br>')
-        .replace(/\s{2,}/g, ' ')
-        .replace(/(<br>\s*){3,}/g, '<br><br>');
-
     formatted = formatted.replace(/(<li>.*?<\/li>(?:\s*<br>\s*<li>.*?<\/li>)*)/gs, '<ul>$1</ul>');
     formatted = formatted.replace(/<br>\s*(<ul>)/g, '$1');
     formatted = formatted.replace(/(<\/ul>)\s*<br>/g, '$1');
@@ -61,7 +45,9 @@ const Home = () => {
   ])
   const chatHistoryRef = useRef(null);
   const [clickedOnce, setClickedOnce] = useState(false)
-  const { setIsChatted, isChatted } = useChatContext();
+  const { isChatted, setIsChatted } = useChatContext();
+
+  console.log("this is ai page",isChatted)
 
 
   const suggestions = [
@@ -72,10 +58,16 @@ const Home = () => {
   ]
 
   useEffect(() => {
+    if (chatHistory.length > 0) {
+      setIsChatted(true);
+    }
+  }, [chatHistory]);
+
+  useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
-  }, [chatHistory]);
+  }, [chatHistory])
 
 
   const aiMutation = useMutation({
@@ -188,7 +180,7 @@ const Home = () => {
                   disabled={aiMutation.isPending}
                 >
                   {aiMutation.isPending ? (
-                    <span className="loading-spinner"></span> // Assuming you have a CSS class for this
+                    <span className="loading-spinner"></span> 
                   ) : (
                     <Send className="w-5 h-5" />
                   )}

@@ -7,6 +7,7 @@ import { ChevronDown, Menu, X, UserRound } from "lucide-react"
 import NavLink from "./NavLink"
 
 import { useGetMe } from '@/hooks/useGetMe'; 
+import { useChatContext } from "@/contexts/AuthContext"
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -20,13 +21,13 @@ export default function Navbar() {
     fullName: userProfile?.name || userProfile?.authId?.name || "Your Name"
   }
 
-  const [chatted, setChatted] = useState(false); 
+  const { setIsChatted, isChatted } = useChatContext();
   const isHiddenRoute = ["/home", "/"]
   const hideLogoBg = isHiddenRoute.includes(pathName)
 
   const navLinks = [
     { title: "Home", href: "/" },
-    ...(chatted ? [{ title: "AI Picks", href: "/ai-picks" }] : []),
+    ...(isChatted ? [{ title: "AI Picks", href: "/ai-picks" }] : []),
     { title: "About", href: "/about-us" },
     ...(isLoggedIn ? [{ title: "Map", href: "/map" }] : []),
     ...(isLoggedIn ? [{ title: "Saved", href: "/saved" }] : []),
