@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import { login as apiLogin } from "@/lib/apis/auth/auth";
+import { login } from "@/lib/apis/auth/auth";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { SuccessToast } from '@/utils/ValidationToast';
+import { ErrorToast, SuccessToast } from '@/utils/ValidationToast';
 
 const LoginForm = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const LoginForm = () => {
     reset,
   } = useForm();
 
-  const saveAuthDataToLocalStorage = (user, accessToken, refreshToken) => {
+  const saveAuthDataToLocalStorage = ( accessToken, refreshToken) => {
     try {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
@@ -48,32 +48,24 @@ const LoginForm = () => {
 
 
   const loginMutation = useMutation({
-    mutationFn: apiLogin,
+    mutationFn: login,
     onSuccess: (response) => {
+      console.log(response)
       if (response.data.success) {
         SuccessToast(response.data.message || 'Login successful!');
         saveAuthDataToLocalStorage(
-          response.data.data.user,
-          response.data.data.accessToken,
-          response.data.data.refreshToken
+          response.data?.data?.accessToken,
+          response.data?.data?.refreshToken,
         );
-
         reset();
         router.push(redirect);
       } else {
-        ErrorToast(response.data.message || 'Login failed. Please check your credentials.');
+        ErrorToast(response.data?.message || 'Login failed. Please check your credentials.');
       }
     },
     onError: (error) => {
-      console.error("Login error:", error);
       const errorMessage = error.response?.data?.message || 'An unexpected error occurred during login.';
       ErrorToast(errorMessage);
-
-      if (error.response?.data?.errorMessages && error.response.data.errorMessages.length > 0) {
-        error.response.data.errorMessages.forEach(err => {
-          ErrorToast(err.message);
-        });
-      }
     },
   });
 

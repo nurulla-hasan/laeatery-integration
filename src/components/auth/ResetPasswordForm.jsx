@@ -76,12 +76,6 @@ const ResetPasswordForm = () => {
       return;
     }
 
-    // resetPasswordMutation.mutate({ 
-    //   email: email,
-    //   otp: otp,
-    //   password: data.password,
-    //   confirmPassword: data.confirmPassword,
-    // });
     resetPasswordMutation.mutate({
       email: email,
       otp: otp,

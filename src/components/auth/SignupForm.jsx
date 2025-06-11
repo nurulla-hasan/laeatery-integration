@@ -8,13 +8,16 @@ import { useRouter } from "next/navigation";
 import { ErrorToast, SuccessToast } from "@/utils/ValidationToast";
 
 import { useMutation } from '@tanstack/react-query';
-import { signUp as apiSignUp } from "@/lib/apis/auth/auth";
+import { signUp } from "@/lib/apis/auth/auth";
 
 const SignupForm = () => {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [registerEmail, setRegisterEmail] = useState()
+  console.log(registerEmail)
 
   const {
     register,
@@ -26,13 +29,14 @@ const SignupForm = () => {
 
   const signupMutation = useMutation({
     mutationFn: async (formData) => { 
-      return await apiSignUp(formData);
+      return await signUp(formData);
     },
     onSuccess: (response) => {
+      console.log("after sign up",response)
       if (response.data.success) {
         SuccessToast(response.data.message || 'Registration successful! Please verify your email.');
         reset();
-        router.push(`/auth/verify-email?email=${response.data.user.email}&mode=registration`);
+        router.push(`/auth/verify-email?email=${registerEmail}&mode=registration`);
       } else {
         ErrorToast(response.data.message || 'Registration failed.');
       }
@@ -51,6 +55,7 @@ const SignupForm = () => {
   });
 
   const onSubmit = (data) => {
+    setRegisterEmail(data.email)
     if (data.password !== data.confirmPassword) {
       ErrorToast("Passwords do not match.");
       return;

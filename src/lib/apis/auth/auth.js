@@ -16,7 +16,7 @@ export const login = (data) => api.post("/auth/login", data);
 // Forgot Password
 export const forgotPassword = (data) => api.post("/auth/forgot-password", data);
 
-// Verify OTP
+// Verify OTP 
 export const verifyOtp = (data) => api.post("/auth/verify-otp", data);
 
 // Resend OTP

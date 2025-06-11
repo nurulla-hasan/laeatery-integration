@@ -16,14 +16,17 @@ const ForgotPasswordForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm(); 
+
+
 
   const forgotPasswordMutation = useMutation({
     mutationFn: apiForgotPassword, 
     onSuccess: (response) => {
+      console.log(response)
       if (response.data.success) {
         SuccessToast(response.data.message || 'Password reset email sent! Please check your email.');
-        router.push(`/auth/verify-email?email=${response.data.email || ''}&mode=forgot-password`);
+        router.push(`/auth/verify-email?email=${localStorage.getItem('forgotPassEmail')}&mode=forgot-password`);
       } else {
         ErrorToast(response.data.message || 'Failed to send password reset email.');
       }
@@ -42,6 +45,8 @@ const ForgotPasswordForm = () => {
   });
 
   const onSubmit = (data) => {
+    console.log(data)
+    localStorage.setItem('forgotPassEmail', data.email)
     forgotPasswordMutation.mutate({ email: data.email });
   };
 

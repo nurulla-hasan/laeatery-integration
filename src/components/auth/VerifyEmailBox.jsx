@@ -7,10 +7,9 @@ import { ErrorToast, SuccessToast } from "@/utils/ValidationToast";
 import { useMutation } from '@tanstack/react-query';
 import {
   verifyOtp as apiVerifyOtp,
-  resendOtp as apiResendOtp, 
+  resendOtp as apiResendOtp,
   newUserVerifyOtp as apiNewUserVerifyOtp,
 } from "@/lib/apis/auth/auth";
-
 
 const VerifyEmailForm = () => {
   const router = useRouter();
@@ -51,7 +50,6 @@ const VerifyEmailForm = () => {
     },
   });
 
-
   const verifyOtpMutation = useMutation({
     mutationFn: async (data) => {
       if (mode === 'registration') {
@@ -68,14 +66,14 @@ const VerifyEmailForm = () => {
         if (mode === 'registration') {
           router.push('/auth/login');
         } else if (mode === 'forgot-password') {
-          router.push(`/auth/reset-password?email=${response.data.email || initialEmail}&otp=${response.data.otp || data.otp}`);
+          router.push(`/auth/reset-password?email=${initialEmail}&otp=${getValues("otp")}`);
         }
       } else {
         ErrorToast(response.data.message || 'OTP verification failed.');
       }
     },
     onError: (error) => {
-      console.error("OTP verification error:", error);
+      console.log("OTP verification error:", error);
       const errorMessage = error.response?.data?.message || 'An unexpected error occurred during OTP verification.';
       ErrorToast(errorMessage);
     },
@@ -103,7 +101,14 @@ const VerifyEmailForm = () => {
   };
 
   const onSubmit = (data) => {
-    verifyOtpMutation.mutate({ email: data.email, code: data.otp });
+    localStorage.removeItem("forgotPassEmail")
+    if (mode === 'registration') {
+      verifyOtpMutation.mutate({ userEmail: data.email, activation_code: data.otp });
+    } else if (mode === 'forgot-password') {
+      verifyOtpMutation.mutate({ code: data.otp, email: data.email });
+    } else {
+      ErrorToast('Invalid verification mode. Cannot submit OTP.');
+    }
   };
 
   if (!initialEmail || !mode) {
@@ -178,7 +183,7 @@ const VerifyEmailForm = () => {
           <button
             type="submit"
             disabled={verifyOtpMutation.isPending}
-            className="w-full bg-black border disabled:cursor-not-allowed border-gray-400 text-white py-2 text-xs px-4  hover:bg-gray-800 transition duration-200 cursor-pointer disabled:opacity-70 rounded-sm"
+            className="w-full bg-black border disabled:cursor-not-allowed border-gray-400 text-white py-2 text-xs px-4  hover:bg-gray-800 transition duration-200 cursor-pointer disabled:opacity-70 rounded-sm"
           >
             {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
           </button>
