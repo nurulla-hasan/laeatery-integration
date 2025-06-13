@@ -14,7 +14,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     if (!isLoading && (!user || isError)) {
       queryClient.invalidateQueries({ queryKey: ["me"] });
-      router.replace("/auth/login");
+      router.replace("/login");
     }
   }, [user, isLoading, isError, router]);
 

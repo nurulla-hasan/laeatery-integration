@@ -35,7 +35,7 @@ const AccountDetails = ({ userData, onEditClick, onChangePasswordClick }) => {
               </div>
               <div>
                 <p className="text-sm">Email</p>
-                <p className="font-medium">{userData?.email || "N/A"}</p>
+                <p className="font-medium">{userData?.email || userData?.authId?.email || "N/A"}</p>
               </div>
               <div>
                 <p className="text-sm">Phone Number</p>

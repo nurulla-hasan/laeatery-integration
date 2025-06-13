@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 
 const AccountBanner = ({ fullName }) => {
-  return (
+  return ( 
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

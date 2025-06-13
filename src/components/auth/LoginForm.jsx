@@ -20,7 +20,7 @@ const LoginForm = () => {
     reset,
   } = useForm();
 
-  const saveAuthDataToLocalStorage = ( accessToken, refreshToken) => {
+  const saveAuthDataToLocalStorage = (accessToken, refreshToken) => {
     try {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
@@ -30,29 +30,15 @@ const LoginForm = () => {
     }
   };
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    const user = localStorage.getItem('user');
-    if (accessToken && user) { 
-      try {
-        const parsedUser = JSON.parse(user);
-        router.push(redirect);
-      } catch (e) {
-        console.error("Error parsing user data from localStorage:", e);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken'); 
-        localStorage.removeItem('user');
-      }
-    }
-  }, [router, redirect]);
-
-
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      console.log(response)
-      if (response.data.success) {
-        SuccessToast(response.data.message || 'Login successful!');
+      const message = response?.data?.message;
+      console.log(response);
+      if (response?.data?.success) {
+        if (message === "Auth logged in successfully!") {
+          SuccessToast("Login successful!")
+        }
         saveAuthDataToLocalStorage(
           response.data?.data?.accessToken,
           response.data?.data?.refreshToken,
@@ -83,7 +69,7 @@ const LoginForm = () => {
         <p className="text-center text-[#333333] mb-6 text-sm">Please enter your email and password to continue</p>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* ... email field ... */}
+          {/* Email field */}
           <div className="mb-8">
             <label htmlFor="email" className="block text-xs font-medium text-[#333333] mb-1">
               Email address
@@ -105,7 +91,7 @@ const LoginForm = () => {
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
           </div>
 
-          {/* ... password field ... */}
+          {/* Password field */}
           <div className="mb-4">
             <label htmlFor="password" className="block text-xs font-medium text-[#333333] mb-1">
               Password
@@ -136,7 +122,7 @@ const LoginForm = () => {
             {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
           </div>
 
-          {/* ... forgot password link ... */}
+          {/* Forgot password link */}
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center"></div>
             <Link href="/auth/forgot-password" className="text-xs text-[#333333] hover:underline cursor-pointer">

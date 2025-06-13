@@ -6,10 +6,10 @@ import { usePathname, useRouter } from "next/navigation"
 import { ChevronDown, Menu, X, UserRound } from "lucide-react"
 import NavLink from "./NavLink"
 
-import { useGetMe } from '@/hooks/useGetMe'; 
+import { useGetMe } from '@/hooks/useGetMe';
 import { useChatContext } from "@/contexts/AuthContext"
 
-export default function Navbar() {
+export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdown, setIsDropdown] = useState(false)
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    refetch(); 
+    refetch();
     router.push('/');
   }
 
@@ -47,7 +47,7 @@ export default function Navbar() {
     setIsDropdown(!isDropdown)
   }
 
- // Animation variants
+  // Animation variants
   const navbarVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -102,7 +102,7 @@ export default function Navbar() {
   }
 
   return (
-    <div>
+    <div className="h-[104px]">
       <motion.nav
         className={`w-full ${hideLogoBg ? "bg-transparent border-0" : "bg-[#E9E7E3] border-b border-[#C0C0C0]"} py-2 md:py-5 fixed z-[1100]`}
         initial="hidden"
@@ -150,7 +150,7 @@ export default function Navbar() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
                 {/* Always render based on isLoading or isLoggedIn */}
                 {isLoading ? (
-                    <p className="text-sm text-gray-600">Loading...</p>
+                  <p className="text-sm text-gray-600">Loading...</p>
                 ) : isLoggedIn ? (
                   <div className="relative">
                     <motion.button
@@ -273,7 +273,7 @@ export default function Navbar() {
 
               {/* Mobile auth */}
               {isLoading ? ( // Check isLoading for mobile auth as well
-                  <p className="mt-4 text-sm text-gray-600">Loading...</p>
+                <p className="mt-4 text-sm text-gray-600">Loading...</p>
               ) : !isLoggedIn ? (
                 <motion.div
                   className="mt-4"
@@ -338,3 +338,5 @@ export default function Navbar() {
     </div>
   )
 }
+
+export default Navbar;

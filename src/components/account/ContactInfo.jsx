@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { Phone, Mail, MapPin } from "lucide-react"
 
-const ContactInfo = () => {
+const ContactInfo = ({ userData }) => {
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold mb-4">Welcome to your account!</h2>
@@ -19,7 +19,7 @@ const ContactInfo = () => {
             className="flex items-center"
           >
             <Phone className="h-5 w-5 mr-3" />
-            <span>839949950252</span>
+            <span>{userData?.phone_number || "N/A"}</span>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 5 }}
@@ -28,7 +28,7 @@ const ContactInfo = () => {
             className="flex items-center"
           >
             <Mail className="h-5 w-5 mr-3" />
-            <span>infocompany@gmail.com</span>
+            <span>{userData?.email || userData?.authId?.email || "N/A"}</span>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 5 }}
@@ -38,9 +38,7 @@ const ContactInfo = () => {
           >
             <MapPin className="h-5 w-5 mr-3 mt-0.5" />
             <span>
-              2118 Thornridge Cir. Syracuse,
-              <br />
-              Connecticut 35624
+              {userData?.address || "Address not available"}
             </span>
           </motion.div>
         </div>

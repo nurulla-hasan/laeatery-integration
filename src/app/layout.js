@@ -3,6 +3,9 @@ import 'leaflet/dist/leaflet.css';
 import { Toaster } from "react-hot-toast";
 import RootLayoutClient from "./RootLayoutClient";
 import { Inter, Poltawski_Nowy } from 'next/font/google'
+import { AuthProvider } from "@/contexts/AuthContext";
+import PrivateRoute from "@/components/private-route/PrivateRoute";
+import NextTopLoader from "nextjs-toploader";
 
 
 const inter = Inter({
@@ -24,13 +27,30 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <NextTopLoader
+          color="#2299DD"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #EC4899,0 0 5px #EC4899"
+        />
+        <div className={`${inter.variable} ${poltawski.variable}`}>
+          <RootLayoutClient>
+            <AuthProvider>
+              {/* <PrivateRoute> */}
+                {children}
+              {/* </PrivateRoute> */}
+            </AuthProvider>
+          </RootLayoutClient>
+        </div>
         <Toaster
-          position="top-center"
+          position="top-right"
           reverseOrder={false}
         />
-            <div className={`${inter.variable} ${poltawski.variable}`}>
-              <RootLayoutClient>{children}</RootLayoutClient>
-            </div>
       </body>
     </html>
   );

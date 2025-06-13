@@ -32,14 +32,10 @@ const ForgotPasswordForm = () => {
       }
     },
     onError: (error) => {
-      console.error("Forgot password error:", error);
+      console.log("Forgot password error:", error);
       const errorMessage = error.response?.data?.message || 'An unexpected error occurred.';
-      ErrorToast(errorMessage);
-
-      if (error.response?.data?.errorMessages && error.response.data.errorMessages.length > 0) {
-        error.response.data.errorMessages.forEach(err => {
-          ErrorToast(err.message);
-        });
+      if(errorMessage === "Cannot read properties of null (reading 'email')"){
+        ErrorToast("Email not found");
       }
     },
   });

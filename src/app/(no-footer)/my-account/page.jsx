@@ -19,14 +19,11 @@ const AccountPage = () => {
   const { data: userProfile, isLoading, isError, refetch } = useGetMe();
 
 
-  const handleUpdateSuccess = (message) => {
-    SuccessToast(message || "Profile updated successfully!");
-    refetch();
+  const handleUpdateSuccess = () => {
     setActiveView("details");
   };
 
-  const handlePasswordChangeSuccess = (message) => {
-    SuccessToast(message || "Password updated successfully!");
+  const handlePasswordChangeSuccess = () => {
     setActiveView("details");
   }
 
@@ -59,7 +56,7 @@ const AccountPage = () => {
 
 
   return (
-    <div className="min-h-screen py-8 text-[#333333] ">
+    <div className="min-h-[calc(100vh-104px)] py-8 text-[#333333] ">
       <HomeContainer>
         {/* Banner with user info */}
         <AccountBanner fullName={userProfile.name || userProfile.authId?.name || "Your Name"} />
@@ -72,7 +69,7 @@ const AccountPage = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="md:col-span-2"
           >
-            <ContactInfo />
+            <ContactInfo userData={userProfile} />
           </motion.div>
 
           {/* Right column - Account details/edit form/change password */}

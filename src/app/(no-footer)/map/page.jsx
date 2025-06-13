@@ -40,7 +40,7 @@ const MapPage = () => {
   return (
     <div className="flex py-10 ">
       {/* Left sidebar with restaurant list */}
-      <div className="w-full absolute lg:top-36 lg:left-40 z-[500] md:w-[600px] h-[83vh] scrl-hide overflow-auto bg-[#E1E1E1]">
+      <div className="w-full absolute lg:top-26 lg:left-40 z-[500] md:w-[600px] h-[calc(100vh-104px)] scrl-hide overflow-auto bg-[#E1E1E1]">
         <div className="p-5 flex flex-col gap-4">
           <form onSubmit={handleSearch} className="mb-4">
             <div className="relative">

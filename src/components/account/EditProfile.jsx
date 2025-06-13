@@ -3,8 +3,8 @@
 import { useForm } from "react-hook-form"
 import { motion, AnimatePresence } from "framer-motion"
 import { useMutation } from '@tanstack/react-query'
-import { ErrorToast, SuccessToast } from '@/utils/ValidationToast'
 import { updateProfile } from "@/lib/apis/profileApis/profile"
+import { ErrorToast, SuccessToast } from "@/utils/ValidationToast"
 
 const EditProfile = ({ userData, onUpdate, onCancel }) => {
   const pageVariants = {
@@ -33,8 +33,8 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
         SuccessToast(response.data.message || 'Profile updated successfully!')
         onUpdate(response.data.data)
         reset({
-          fullName: response.data.data.name,
-          email: response.data.data.email,
+          fullName: response.data.data.name || response.data.data.authId?.name,
+          email: response.data.data.email || response.data.data.authId?.email,
           phone: response.data.data.phone_number,
         })
       } else {
@@ -45,9 +45,6 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
       console.error("Profile update error:", error)
       const errorMessage = error.response?.data?.message || 'An unexpected error occurred during profile update.'
       ErrorToast(errorMessage)
-      if (error.response?.data?.errorMessages?.length) {
-        error.response.data.errorMessages.forEach(err => ErrorToast(err.message))
-      }
     },
   })
 
@@ -59,7 +56,6 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
     if (data.profile_image && data.profile_image[0]) {
       formData.append('profile_image', data.profile_image[0])
     }
-
     updateProfileMutation.mutate(formData)
   }
 
@@ -75,13 +71,13 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
               <label htmlFor="fullName" className="block text-sm font-medium mb-1">Full Name</label>
               <input
                 id="fullName"
-                className={`w-full p-3 border ${errors.fullName ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                className={`w-full p-3 border ${errors.fullName ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-ringColor`}
                 {...register("fullName", { required: "Full name is required" })}
               />
               {errors.fullName && <p className="mt-1 text-red-500 text-xs">{errors.fullName.message}</p>}
             </div>
 
-            {/* Email (Read-only, not sent) */}
+            {/* Email (Read-only) */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
               <input
@@ -98,7 +94,7 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
               <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone Number</label>
               <input
                 id="phone"
-                className={`w-full p-3 border ${errors.phone ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                className={`w-full p-3 border ${errors.phone ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-ringColor`}
                 {...register("phone", { required: "Phone number is required" })}
               />
               {errors.phone && <p className="mt-1 text-red-500 text-xs">{errors.phone.message}</p>}
@@ -111,7 +107,7 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
                 id="profile_image"
                 type="file"
                 accept="image/*"
-                className={`w-full p-3 border ${errors.profile_image ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                className={`w-full p-3 border ${errors.profile_image ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-ringColor`}
                 {...register("profile_image")}
               />
               {errors.profile_image && <p className="mt-1 text-red-500 text-xs">{errors.profile_image.message}</p>}

@@ -1,16 +1,16 @@
 "use client"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import HomeContainer from "@/components/home-container/HomeContainer"
-import FilterCompo from "@/components/shared/filterCompo/FilterCompo"
+// import FilterCompo from "@/components/shared/filterCompo/FilterCompo"
 import RestaurantCard from "@/components/shared/restaurant-Card/RestaurantCard"
-import { allRestaurantData, cuisines, neighborhoods, vibes } from "@/lib/data"
-import { FilterIcon, X } from "lucide-react"
+import { allRestaurantData } from "@/lib/data"
+// import { FilterIcon, X } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+// import { useState } from "react"
 // import toast from "react-hot-toast"
 
 const AiPics = () => {
-  const [showFilterModal, setShowFilterModal] = useState(false)
+  // const [showFilterModal, setShowFilterModal] = useState(false)
 
   // const handleFilterApply = () => {
   //   setShowFilterModal(false)
@@ -27,33 +27,6 @@ const AiPics = () => {
       },
     },
   }
-
-  const modalVariants = {
-    hidden: { x: "100%" },
-    visible: {
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
-    },
-    exit: {
-      x: "100%",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
-    },
-  }
-
-  const backdropVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 },
-  }
-
   return (
     <motion.div className="" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <div className="py-10">
@@ -74,7 +47,7 @@ const AiPics = () => {
                   </button>
                 </Link>
               </motion.div>
-              <motion.button
+              {/* <motion.button
                 onClick={() => setShowFilterModal(true)}
                 className="bg-black text-white px-4 py-2 rounded flex items-center gap-2 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
@@ -82,7 +55,7 @@ const AiPics = () => {
               >
                 <FilterIcon size={16} />
                 Filter
-              </motion.button>
+              </motion.button> */}
             </div>
           </motion.div>
 
@@ -107,7 +80,7 @@ const AiPics = () => {
         </HomeContainer>
 
         {/* Filter Modal with AnimatePresence for smooth enter/exit */}
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {showFilterModal && (
             <>
               <motion.div
@@ -149,13 +122,10 @@ const AiPics = () => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    {/* Neighborhood filter */}
                     <FilterCompo title="Neighborhood" data={neighborhoods} />
 
-                    {/* Cuisine filter */}
                     <FilterCompo title="Cuisine" data={cuisines} />
 
-                    {/* Vibe filter */}
                     <FilterCompo title="Vibe" data={vibes} />
                   </motion.div>
 
@@ -178,7 +148,7 @@ const AiPics = () => {
               </motion.div>
             </>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
       </div>
     </motion.div>
   )

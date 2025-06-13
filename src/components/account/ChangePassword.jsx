@@ -4,6 +4,9 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { motion, AnimatePresence } from "framer-motion"
 import { Eye, EyeOff } from "lucide-react"
+import { useMutation } from "@tanstack/react-query";
+import { changePassword } from "@/lib/apis/profileApis/profile"
+import { ErrorToast, SuccessToast } from "@/utils/ValidationToast"
 
 const ChangePassword = ({ onPasswordChange, onCancel }) => {
   const [showPassword, setShowPassword] = useState({
@@ -23,6 +26,7 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
     handleSubmit,
     watch,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       currentPassword: "",
@@ -30,6 +34,19 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
       confirmPassword: "",
     },
   })
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: changePassword,
+    onSuccess: (data) => {
+      SuccessToast(data.message || "Password changed successfully!");
+      onPasswordChange();
+      reset();
+    },
+    onError: (error) => {
+      const errorMessage = error?.response?.data?.message || "Failed to change password. Please try again.";
+      ErrorToast(errorMessage);
+    },
+  });
 
   const togglePasswordVisibility = (field) => {
     setShowPassword({
@@ -39,8 +56,12 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
   }
 
   const onSubmit = (data) => {
-    console.log("Password changed:", data)
-    onPasswordChange()
+    const payload = {
+      oldPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      confirmPassword: data.confirmPassword,
+    };
+    mutate(payload);
   }
 
   return (
@@ -57,9 +78,8 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
                 <input
                   type={showPassword.current ? "text" : "password"}
                   id="currentPassword"
-                  className={`w-full p-3 border ${
-                    errors.currentPassword ? "border-red-500" : "border-gray-300"
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 pr-10`}
+                  className={`w-full p-3 border ${errors.currentPassword ? "border-red-500" : "border-gray-300"
+                    } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 pr-10`}
                   {...register("currentPassword", {
                     required: "Current password is required",
                   })}
@@ -82,9 +102,8 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
                 <input
                   type={showPassword.new ? "text" : "password"}
                   id="newPassword"
-                  className={`w-full p-3 border ${
-                    errors.newPassword ? "border-red-500" : "border-gray-300"
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 pr-10`}
+                  className={`w-full p-3 border ${errors.newPassword ? "border-red-500" : "border-gray-300"
+                    } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 pr-10`}
                   {...register("newPassword", {
                     required: "New password is required",
                     minLength: {
@@ -111,9 +130,8 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
                 <input
                   type={showPassword.confirm ? "text" : "password"}
                   id="confirmPassword"
-                  className={`w-full p-3 border ${
-                    errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 pr-10`}
+                  className={`w-full p-3 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                    } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 pr-10`}
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                     validate: (value) => value === watch("newPassword") || "Passwords do not match",
@@ -135,8 +153,9 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 className="flex-1 py-3 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-colors"
+                disabled={isLoading}
               >
-                Change Password
+                {isLoading ? "Changing..." : "Change Password"}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -144,6 +163,7 @@ const ChangePassword = ({ onPasswordChange, onCancel }) => {
                 type="button"
                 onClick={onCancel}
                 className="px-4 py-3 border border-gray-300 rounded-md text-sm hover:bg-gray-50"
+                disabled={isLoading}
               >
                 Cancel
               </motion.button>

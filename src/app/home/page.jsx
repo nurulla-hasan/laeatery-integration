@@ -7,7 +7,7 @@ import VibeSection from "@/components/home-container/home-items/VibeSection";
 
 const HomePage = () => {
     return (
-        <div>
+        <div className="-mt-[104px]">
             <Hero />
             <FindGallery />
             <NearbyRestaurants />
