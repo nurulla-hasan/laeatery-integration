@@ -1,4 +1,4 @@
-import { api } from "../auth/axiosInstance";
+import { api } from "../authApis/axiosInstance";
 
 export const getAiResponse = async (messagePayload) => {
     try {

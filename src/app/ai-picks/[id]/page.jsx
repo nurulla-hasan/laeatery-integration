@@ -2,6 +2,7 @@
 import { use, useMemo, useState } from "react"
 import { allRestaurantData } from "@/lib/data"
 import RestaurantDetailsCard from "@/components/shared/restaurant-details-page/RestaurantDetailsCard"
+import Loading from "@/components/loading/Loading"
 
 function getHashedIndex(str, length) {
   let hash = 0
@@ -25,7 +26,7 @@ const AIPicsDetails = ({ params }) => {
     setIsFavorite((prev) => !prev)
   }
 
-  if (!restaurant) return <div>Loading...</div>
+  if (!restaurant) return <Loading/>
 
   return (
     <div className="min-h-screen py-8 ">

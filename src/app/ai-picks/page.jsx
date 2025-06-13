@@ -7,15 +7,15 @@ import { allRestaurantData, cuisines, neighborhoods, vibes } from "@/lib/data"
 import { FilterIcon, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import toast from "react-hot-toast"
+// import toast from "react-hot-toast"
 
 const AiPics = () => {
   const [showFilterModal, setShowFilterModal] = useState(false)
 
-  const handleFilterApply = () => {
-    setShowFilterModal(false)
-    toast.success("Your Filtered Items")
-  }
+  // const handleFilterApply = () => {
+  //   setShowFilterModal(false)
+  //   toast.success("Your Filtered Items")
+  // }
 
   // Animation variants
   const containerVariants = {

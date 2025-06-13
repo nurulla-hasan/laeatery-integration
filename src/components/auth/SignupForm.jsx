@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { ErrorToast, SuccessToast } from "@/utils/ValidationToast";
 
 import { useMutation } from '@tanstack/react-query';
-import { signUp } from "@/lib/apis/auth/auth";
+import { signUp } from "@/lib/apis/authApis/auth";
 
 const SignupForm = () => {
   const router = useRouter();

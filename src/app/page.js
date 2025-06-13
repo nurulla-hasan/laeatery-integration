@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Mic, Plus, Send } from "lucide-react";
-import HomeContainer from "@/components/home-container/HomeContainer";
+// import HomeContainer from "@/components/home-container/HomeContainer";
 import ChatHistory from "@/components/AI/ChatHistory";
 import SuggestionChip from "@/components/AI/SuggestionChip";
 import { useRouter } from "next/navigation";
@@ -41,13 +41,10 @@ const formatMessage =(content)=> {
 const Home = () => {
   const router = useRouter()
   const [message, setMessage] = useState("")
-  const [chatHistory, setChatHistory] = useState([
-  ])
+  const [chatHistory, setChatHistory] = useState([])
   const chatHistoryRef = useRef(null);
   const [clickedOnce, setClickedOnce] = useState(false)
   const { isChatted, setIsChatted } = useChatContext();
-
-  console.log("this is ai page",isChatted)
 
 
   const suggestions = [
@@ -146,9 +143,9 @@ const Home = () => {
 
       {/* Main chat section (only when clickedOnce is true) */}
       {clickedOnce && (
-        <div className="flex flex-col flex-grow items-center w-full max-w-5xl mx-auto px-4 pb-4"> {/* max-w-4xl for centering chat */}
+        <div className="flex flex-col flex-grow items-center w-full max-w-5xl mx-auto px-4 pb-4"> {/* max-w-5xl for centering chat */}
           {/* Chat History Container */}
-          <div ref={chatHistoryRef} className="flex-grow w-full overflow-y-auto scrl-hide p-4 mb-4" style={{ maxHeight: 'calc(100vh - 250px)' }}>
+          <div ref={chatHistoryRef} className="flex-grow w-full overflow-y-auto scrl-hide p-4 mb-4 max-h-[calc(100vh-250px)]">
             <ChatHistory messages={chatHistory} />
           </div>
 

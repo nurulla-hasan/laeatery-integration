@@ -15,4 +15,4 @@ const ChatMessage = ({ message, isUser, isPending, isError }) => {
     )
   }
   
-  export default ChatMessage
+  export default ChatMessage 

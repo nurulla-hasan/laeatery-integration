@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react" // useEffect added
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import HomeContainer from "@/components/home-container/HomeContainer"
 import ContactInfo from "@/components/account/ContactInfo"
@@ -7,42 +7,30 @@ import AccountBanner from "@/components/account/AccountBanner"
 import AccountDetails from "@/components/account/AccountDetails"
 import EditProfile from "@/components/account/EditProfile"
 import ChangePassword from "@/components/account/ChangePassword"
-// import { useSelector } from "react-redux" // REMOVED
-import { useGetMe } from "@/hooks/useGetMe" // Import the useGetMe hook
-import Loading from "@/components/loading/Loading" // Assuming you have a Loading component
+import { useGetMe } from "@/hooks/useGetMe"
+import Loading from "@/components/loading/Loading"
+import { ErrorToast, SuccessToast } from "@/utils/ValidationToast"
 
 
 const AccountPage = () => {
   const [activeView, setActiveView] = useState("details")
 
   // Use useGetMe hook to fetch user data
-  const { data: userProfile, isLoading, isError } = useGetMe();
-
-  const [userData, setUserData] = useState({
-    fullName: "Your Name", 
-    email: "email@example.com",
-    phone: "(208) 555-0112", 
-    password: "••••••••", 
-  })
-
-  useEffect(() => {
-    if (userProfile) {
-      setUserData((prevData) => ({
-        ...prevData,
-        fullName: userProfile.name || userProfile.authId?.name || "Your Name",
-        email: userProfile.email || "email@example.com",
-      }));
-    }
-  }, [userProfile]);
+  const { data: userProfile, isLoading, isError, refetch } = useGetMe();
 
 
-  const updateUserData = (newData) => {
-    setUserData({
-      ...userData,
-      ...newData,
-    })
-    setActiveView("details")
+  const handleUpdateSuccess = (message) => {
+    SuccessToast(message || "Profile updated successfully!");
+    refetch();
+    setActiveView("details");
+  };
+
+  const handlePasswordChangeSuccess = (message) => {
+    SuccessToast(message || "Password updated successfully!");
+    setActiveView("details");
   }
+
+
 
   if (isLoading) {
     return (
@@ -53,6 +41,7 @@ const AccountPage = () => {
   }
 
   if (isError) {
+    ErrorToast("Failed to load user data.");
     return (
       <div className="min-h-screen flex justify-center items-center text-red-600 bg-[#E6F8F7]">
         <p>Error loading account data. Please try again.</p>
@@ -73,7 +62,7 @@ const AccountPage = () => {
     <div className="min-h-screen py-8 text-[#333333] ">
       <HomeContainer>
         {/* Banner with user info */}
-        <AccountBanner fullName={userData.fullName} />
+        <AccountBanner fullName={userProfile.name || userProfile.authId?.name || "Your Name"} />
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Left column - Welcome and contact info */}
@@ -96,19 +85,22 @@ const AccountPage = () => {
             <div className="rounded-lg p-6">
               {activeView === "details" && (
                 <AccountDetails
-                  userData={userData}
+                  userData={userProfile}
                   onEditClick={() => setActiveView("edit")}
                   onChangePasswordClick={() => setActiveView("password")}
                 />
               )}
 
               {activeView === "edit" && (
-                <EditProfile userData={userData} onUpdate={updateUserData} onCancel={() => setActiveView("details")} />
+                <EditProfile
+                  userData={userProfile}
+                  onUpdate={handleUpdateSuccess}
+                  onCancel={() => setActiveView("details")} />
               )}
 
               {activeView === "password" && (
                 <ChangePassword
-                  onPasswordChange={() => setActiveView("details")}
+                  onPasswordChange={handlePasswordChangeSuccess}
                   onCancel={() => setActiveView("details")}
                 />
               )}

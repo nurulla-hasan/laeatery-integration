@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import { Search } from "lucide-react"
 import MapRestaurantCard from "@/components/shared/restaurant-Card/MapRestaurantCard"
 import { allRestaurantData } from "@/lib/data"
+import Loading from "@/components/loading/Loading"
 
 
 const MapPage = () => {
@@ -15,7 +16,7 @@ const MapPage = () => {
   const MultipleRestaurantMap = dynamic(() => import("@/components/shared/restaurant-map/MultipleRestaurantMap"), {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[83vh] bg-gray-200 animate-pulse flex items-center justify-center">Loading Map...</div>
+      <Loading/>
     ),
   })
 
@@ -34,7 +35,6 @@ const MapPage = () => {
 
   const handleSearch = (e) => {
     e.preventDefault()
-    // Search is already handled by the useEffect
   }
 
   return (

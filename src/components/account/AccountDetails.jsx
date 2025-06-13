@@ -31,15 +31,15 @@ const AccountDetails = ({ userData, onEditClick, onChangePasswordClick }) => {
             <div className="space-y-4">
               <div>
                 <p className="text-sm">Full Name</p>
-                <p className="font-medium">{userData.fullName}</p>
+                <p className="font-medium">{userData?.name || userData?.authId?.name || "Your Name"}</p>
               </div>
               <div>
                 <p className="text-sm">Email</p>
-                <p className="font-medium">{userData.email}</p>
+                <p className="font-medium">{userData?.email || "N/A"}</p>
               </div>
               <div>
                 <p className="text-sm">Phone Number</p>
-                <p className="font-medium">{userData.phone}</p>
+                <p className="font-medium">{userData?.phone_number || "N/A"}</p>
               </div>
             </div>
           </div>
@@ -50,7 +50,7 @@ const AccountDetails = ({ userData, onEditClick, onChangePasswordClick }) => {
               <div className="flex justify-between">
                 <div>
                   <p className="text-sm">Current Password</p>
-                  <p className="font-medium">{userData.password}</p>
+                  <p className="font-medium">{"••••••••"}</p>
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}

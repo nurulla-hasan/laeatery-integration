@@ -9,7 +9,7 @@ import {
   verifyOtp as apiVerifyOtp,
   resendOtp as apiResendOtp,
   newUserVerifyOtp as apiNewUserVerifyOtp,
-} from "@/lib/apis/auth/auth";
+} from "@/lib/apis/authApis/auth";
 
 const VerifyEmailForm = () => {
   const router = useRouter();

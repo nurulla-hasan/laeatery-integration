@@ -1,5 +1,5 @@
+import { getUserProfile } from '@/lib/apis/profileApis/profile';
 import { useQuery } from '@tanstack/react-query';
-import { getUserProfile } from '@/lib/apis/auth/auth'; 
 
 export const useGetMe = () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;

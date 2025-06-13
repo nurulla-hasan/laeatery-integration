@@ -8,7 +8,7 @@ import { ErrorToast, SuccessToast } from "@/utils/ValidationToast";
 
 import { useMutation } from '@tanstack/react-query';
 
-import { resetPassword as apiResetPassword } from "@/lib/apis/auth/auth";
+import { resetPassword as apiResetPassword } from "@/lib/apis/authApis/auth";
 
 const ResetPasswordForm = () => {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { login } from "@/lib/apis/auth/auth";
+import { login } from "@/lib/apis/authApis/auth";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';

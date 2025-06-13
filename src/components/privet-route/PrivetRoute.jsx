@@ -6,6 +6,7 @@ import Loading from "../loading/Loading";
 import { useQueryClient } from "@tanstack/react-query";
 
 const PrivateRoute = ({ children }) => {
+  
   const queryClient = useQueryClient();
   const router = useRouter();
   const { data: user, isLoading, isError } = useGetMe(); 
@@ -31,4 +32,4 @@ const PrivateRoute = ({ children }) => {
   return null;
 };
 
-export default PrivateRoute;
+export default PrivateRoute; 
