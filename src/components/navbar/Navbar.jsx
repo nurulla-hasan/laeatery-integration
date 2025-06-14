@@ -1,13 +1,12 @@
 "use client"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { ChevronDown, Menu, X, UserRound } from "lucide-react"
 import NavLink from "./NavLink"
 
 import { useGetMe } from '@/hooks/useGetMe';
-import { useChatContext } from "@/contexts/AuthContext"
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -21,9 +20,32 @@ export const Navbar = () => {
     fullName: userProfile?.name || userProfile?.authId?.name || "Your Name"
   }
 
-  const { setIsChatted, isChatted } = useChatContext();
-  const isHiddenRoute = ["/home", "/"]
-  const hideLogoBg = isHiddenRoute.includes(pathName)
+  const [isChatted, setIsChatted] = useState(false); 
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedIsChatted = localStorage.getItem('isChatted');
+      setIsChatted(storedIsChatted === 'true'); 
+    }
+    const handleStorageChange = (event) => {
+      if (event.key === 'isChatted') {
+        setIsChatted(event.newValue === 'true');
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handleStorageChange);
+      }
+    };
+  }, []);
+
+  const isHiddenRoute = ["/home", "/"];
+  const hideLogoBg = isHiddenRoute.includes(pathName);
 
   const navLinks = [
     { title: "Home", href: "/" },

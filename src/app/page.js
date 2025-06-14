@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { getAiResponse } from "@/lib/apis/ai/ai";
 import { ErrorToast } from "@/utils/ValidationToast";
-import { useChatContext } from "@/contexts/AuthContext";
 import Navbar from "@/components/navbar/Navbar";
 
 
@@ -44,8 +43,10 @@ const Home = () => {
   const [message, setMessage] = useState("")
   const [chatHistory, setChatHistory] = useState([])
   const chatHistoryRef = useRef(null);
-  const [clickedOnce, setClickedOnce] = useState(false)
-  const { isChatted, setIsChatted } = useChatContext();
+  const [isLoadingLocalStorage, setIsLoadingLocalStorage] = useState(true);
+
+  const [clickedOnce, setClickedOnce] = useState(false);
+  const [isChatted, setIsChatted] = useState(false);
 
 
   const suggestions = [
@@ -56,16 +57,55 @@ const Home = () => {
   ]
 
   useEffect(() => {
-    if (chatHistory.length > 0) {
-      setIsChatted(true);
+    if (typeof window !== 'undefined') {
+      const storedChatHistory = localStorage.getItem('chatHistory');
+      if (storedChatHistory) {
+        try {
+          const parsedHistory = JSON.parse(storedChatHistory);
+          setChatHistory(parsedHistory);
+          if (parsedHistory.length > 0) {
+            setClickedOnce(true);
+          }
+        } catch (e) {
+          console.error("Failed to parse chat history from localStorage", e);
+          localStorage.removeItem('chatHistory');
+        }
+      }
+
+      // Load clickedOnce state
+      const storedClickedOnce = localStorage.getItem('clickedOnce');
+      if (storedClickedOnce === 'true') {
+        setClickedOnce(true);
+      }
+
+      // Load isChatted state
+      const storedIsChatted = localStorage.getItem('isChatted');
+      if (storedIsChatted === 'true') {
+        setIsChatted(true);
+      }
     }
-  },);
+    setIsLoadingLocalStorage(false); // Mark loading as complete
+  }, []); 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('isChatted', isChatted);
+    }
+  }, [isChatted]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('clickedOnce', clickedOnce);
+    }
+  }, [clickedOnce]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    }
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
-  }, [chatHistory])
+  }, [chatHistory]);
 
 
   const aiMutation = useMutation({
@@ -107,19 +147,32 @@ const Home = () => {
   };
 
   const handleExplore = () => {
-    if (!clickedOnce) {
-      setClickedOnce(true);
+    if (chatHistory.length === 0 && !clickedOnce) {
+        setClickedOnce(true);
+        setIsChatted(true); 
     } else {
-      setIsChatted(true);
-      router.push('/ai-picks');
+        setIsChatted(true);
+        router.push('/ai-picks');
     }
   }
-  
+
+  if (isLoadingLocalStorage) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Loading your chat...</p>
+      </div>
+    );
+  }
+
+  const showInitialSection = !(chatHistory.length > 0 || clickedOnce);
+  const showChatSection = (chatHistory.length > 0 || clickedOnce);
+
+
   return (
     <>
     <Navbar/>
       <div className='flex flex-col'>
-        {!clickedOnce && (
+        {showInitialSection && (
           <div className="flex flex-col items-center justify-center flex-grow py-10">
             <div className="relative mb-4">
               <Image src="/image/logo2.png" alt="LA Eatery Logo" width={1920} height={1080} className="object-contain w-[500px]" />
@@ -134,7 +187,6 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Discover Section - Initial state button */}
             <div className="mt-4 text-center">
               <button onClick={handleExplore} className="bg-[#5C5C5C] cursor-pointer hover:bg-gray-800 text-white py-3 px-8 rounded-full transition-colors">
                 Let’s Explore
@@ -143,16 +195,13 @@ const Home = () => {
           </div>
         )}
 
-        {/* Main chat section (only when clickedOnce is true) */}
-        {clickedOnce && (
-          <div className="flex flex-col flex-grow items-center w-full max-w-5xl mx-auto px-4 pb-4"> {/* max-w-5xl for centering chat */}
-            {/* Chat History Container */}
+        {showChatSection && (
+          <div className="flex flex-col flex-grow items-center w-full max-w-5xl mx-auto px-4 pb-4">
             <div ref={chatHistoryRef} className="flex-grow w-full overflow-y-auto scrl-hide p-4 mb-4 max-h-[420px] md:max-h-[650px] max-w-[768px]">
               <ChatHistory messages={chatHistory} />
             </div>
 
-            {/* Suggestions */}
-            {chatHistory.length <= 2 && ( // Adjust this condition as needed
+            {chatHistory.length <= 2 && (
               <div className="flex fixed bottom-28 flex-wrap justify-center gap-2 mb-6 w-full max-w-2xl">
                 {suggestions.map((suggestion, index) => (
                   <SuggestionChip key={index} text={suggestion} onClick={handleSuggestionClick} />
@@ -160,7 +209,6 @@ const Home = () => {
               </div>
             )}
 
-            {/* Chat Input */}
             <form onSubmit={handleSubmit} className="w-full max-w-2xl fixed bottom-4">
               <div className="flex items-center p-2 pl-4 bg-white rounded-full shadow-md border border-gray-300">
                 <Plus className="w-5 h-5 mr-2 text-gray-500" />
@@ -196,7 +244,6 @@ const Home = () => {
               </div>
             </form>
 
-            {/* Optional: Explore button in chat view if still needed */}
             {chatHistory.length > 0 && (
               <div className="mt-4 text-center fixed bottom-20">
                 <button onClick={handleExplore} className="bg-[#5C5C5C] cursor-pointer hover:bg-gray-800 text-white py-2 px-6 rounded-full transition-colors">
