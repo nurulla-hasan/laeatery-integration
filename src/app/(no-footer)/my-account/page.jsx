@@ -10,21 +10,22 @@ import ChangePassword from "@/components/account/ChangePassword"
 import { useGetMe } from "@/hooks/useGetMe"
 import Loading from "@/components/loading/Loading"
 import { ErrorToast, SuccessToast } from "@/utils/ValidationToast"
+import { useQueryClient } from "@tanstack/react-query"
 
 
 const AccountPage = () => {
   const [activeView, setActiveView] = useState("details")
-
   // Use useGetMe hook to fetch user data
   const { data: userProfile, isLoading, isError, refetch } = useGetMe();
-
+  const queryClient = useQueryClient();
 
   const handleUpdateSuccess = () => {
-    setActiveView("details");
     queryClient.invalidateQueries(["me"]);
+    setActiveView("details");
   };
 
   const handlePasswordChangeSuccess = () => {
+    queryClient.invalidateQueries(["me"]);
     setActiveView("details");
   }
 

@@ -4,48 +4,31 @@ import { motion } from "framer-motion"
 import { Heart, MapPin, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import placeholder_image from "../../../../public/image/placeholder-image.png"
-import { SuccessToast } from "@/utils/ValidationToast"
-// import { getLocationFromLatLng } from "@/utils/getLocationFromLatLng"
+import { getLocationFromLatLng } from "@/utils/getLocationFromLatLng"
 
-const RestaurantCard = ({ data, path }) => {
+// `onRemoveFavorite` prop যোগ করা হয়েছে
+const SavedRestaurantCard = ({ data, path, onRemoveFavorite }) => {
   const [imgError, setImgError] = useState(false)
   const [locationName, setLocationName] = useState("")
-  const [localFavorite, setLocalFavorite] = useState(false)
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("savedRestaurants") || "[]")
-    const isSaved = saved.some((item) => item.id === data.id)
-    setLocalFavorite(isSaved)
-  }, [data.id])
-
-  // useEffect(() => {
-  //   if (data?.location) {
-  //     const [lat, lng] = data.location.split(',').map(coord => parseFloat(coord.trim()))
-  //     getLocationFromLatLng(lat, lng).then(setLocationName)
-  //   }
-  // }, [data?.location])
-
-  const handleToggle = () => {
-    const saved = JSON.parse(localStorage.getItem("savedRestaurants") || "[]")
-
-    if (localFavorite) {
-      const updated = saved.filter((item) => item.id !== data.id)
-      localStorage.setItem("savedRestaurants", JSON.stringify(updated))
-      setLocalFavorite(false)
-      SuccessToast("Removed from favorites")
-    } else {
-      saved.push(data)
-      localStorage.setItem("savedRestaurants", JSON.stringify(saved))
-      setLocalFavorite(true)
-      SuccessToast("Added to favorites")
+    if (data?.location) {
+      const [lat, lng] = data.location.split(",").map(coord => parseFloat(coord.trim()))
+      getLocationFromLatLng(lat, lng)
+        .then(name => {
+          setLocationName(name);
+          if (name === "Location not found" || name === "Location N/A") {
+            // console.warn("Could not determine location for:", data.name);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching location name:", error);
+          setLocationName("Location N/A");
+        });
     }
-  }
-
-  const handleBook = () => {
-    SuccessToast("Booking functionality is not yet implemented for this restaurant.")
-  }
+  }, [data?.location]);
 
   const heartVariants = {
     initial: { scale: 1 },
@@ -53,20 +36,22 @@ const RestaurantCard = ({ data, path }) => {
       scale: [1, 1.3, 1],
       transition: { duration: 0.3 },
     },
-    favorite: {
-      scale: [1, 1.2, 1],
-      transition: { duration: 0.3 },
-    },
   }
 
   const formattedCategories =
     Array.isArray(data?.categories)
-      ? data.categories.map((category) => ({
+      ? data.categories.map(category => ({
           label: typeof category === "string" ? category : category.label,
         }))
       : typeof data?.categories === "string"
-      ? data.categories.split(",").map((c) => ({ label: c.trim() }))
-      : []
+        ? data.categories.split(",").map(c => ({ label: c.trim() }))
+        : []
+
+  const handleRemove = () => {
+    if (onRemoveFavorite) {
+      onRemoveFavorite(data);
+    }
+  };
 
   return (
     <motion.div
@@ -86,15 +71,15 @@ const RestaurantCard = ({ data, path }) => {
           />
         </Link>
         <motion.button
-          onClick={handleToggle}
+          onClick={handleRemove}
           className="absolute top-3 right-3 p-2 rounded-full cursor-pointer transition-all duration-300 bg-white/50 text-black backdrop-blur-sm"
-          aria-label={localFavorite ? "Remove from favorites" : "Add to favorites"}
+          aria-label="Remove from saved"
           variants={heartVariants}
           initial="initial"
           whileTap="tap"
-          animate={localFavorite ? "favorite" : "initial"}
+          whileHover={{ scale: 1.1 }}
         >
-          <Heart className={`h-5 w-5 ${localFavorite ? "fill-black" : ""}`} />
+          <Heart className="h-5 w-5 fill-black" />
         </motion.button>
       </div>
 
@@ -116,30 +101,30 @@ const RestaurantCard = ({ data, path }) => {
                 {formattedCategories.slice(0, 1).map((tag, index) => (
                   <span key={index}>• {tag.label}</span>
                 ))}
-                {formattedCategories.length > 2 && (
+                {formattedCategories.length > 1 && (
                   <span
                     className="cursor-pointer"
-                    title={formattedCategories.map((tag) => tag.label).join(", ")}
+                    title={formattedCategories.map(tag => tag.label).join(", ")}
                   >
-                    • +{formattedCategories.length - 2} more
+                    • +{formattedCategories.length - 1} more
                   </span>
                 )}
               </div>
             )}
           </div>
 
-          {/* <div className="flex items-center text-[#333333] text-xs mt-2">
+          <div className="flex items-center text-[#333333] text-xs mt-2">
             <MapPin className="w-4 h-4 mr-1" />
             <span>{locationName || "Loading location..."}</span>
-          </div> */}
+          </div>
         </div>
 
         <div className="mt-auto">
           <button
-            onClick={handleBook}
-            className="w-full py-1.5 bg-black text-white text-xs font-medium rounded cursor-pointer hover:bg-[#111]"
+            onClick={handleRemove}
+            className="w-full py-1.5 bg-gray-700 text-white text-xs font-medium rounded cursor-pointer hover:bg-gray-800 transition-colors"
           >
-            Book Now
+            Remove from Saved
           </button>
         </div>
       </div>
@@ -147,4 +132,4 @@ const RestaurantCard = ({ data, path }) => {
   )
 }
 
-export default RestaurantCard;
+export default SavedRestaurantCard;

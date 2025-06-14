@@ -22,7 +22,7 @@ api.interceptors.response.use(
     console.log(error)
     if (error.response?.status === 401 && typeof window !== "undefined") {
       localStorage.clear();
-      // window.location.href = "/auth/login";
+      window.location.href = "/auth/login";
     }
     return Promise.reject(error);
   }

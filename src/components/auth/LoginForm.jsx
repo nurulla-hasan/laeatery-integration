@@ -34,7 +34,6 @@ const LoginForm = () => {
     mutationFn: login,
     onSuccess: (response) => {
       const message = response?.data?.message;
-      console.log(response);
       if (response?.data?.success) {
         if (message === "Auth logged in successfully!") {
           SuccessToast("Login successful!")

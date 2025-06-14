@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Mic, Plus, Send } from "lucide-react";
-// import HomeContainer from "@/components/home-container/HomeContainer";
 import ChatHistory from "@/components/AI/ChatHistory";
 import SuggestionChip from "@/components/AI/SuggestionChip";
 import { useRouter } from "next/navigation";
@@ -11,7 +10,6 @@ import { getAiResponse } from "@/lib/apis/ai/ai";
 import { ErrorToast } from "@/utils/ValidationToast";
 import { useChatContext } from "@/contexts/AuthContext";
 import Navbar from "@/components/navbar/Navbar";
-import PrivateRoute from "@/components/private-route/PrivateRoute";
 
 
 const bgImage = {
@@ -119,7 +117,6 @@ const Home = () => {
   
   return (
     <>
-    <PrivateRoute>
     <Navbar/>
       <div className='flex flex-col'>
         {!clickedOnce && (
@@ -210,7 +207,6 @@ const Home = () => {
           </div>
         )}
       </div>
-      </PrivateRoute>
     </>
   )
 }

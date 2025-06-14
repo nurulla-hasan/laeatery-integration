@@ -32,13 +32,13 @@ const MapPage = () => {
     )
     setFilteredRestaurants(filtered)
   }, [searchQuery])
-
+ 
   const handleSearch = (e) => {
     e.preventDefault()
   }
 
   return (
-    <div className="flex py-10 ">
+    <div className="flex">
       {/* Left sidebar with restaurant list */}
       <div className="w-full absolute lg:top-26 lg:left-40 z-[500] md:w-[600px] h-[calc(100vh-104px)] scrl-hide overflow-auto bg-[#E1E1E1]">
         <div className="p-5 flex flex-col gap-4">
@@ -65,7 +65,7 @@ const MapPage = () => {
 
       {/* Right side map */}
       <div className="hidden md:block flex-grow relative">
-        <div className="absolute top-4 left-4 right-4 z-10">
+        {/* <div className="absolute top-4 left-4 right-4 z-[10000]">
           <div className="relative">
             <input
               type="text"
@@ -78,8 +78,7 @@ const MapPage = () => {
               <Search className="h-5 w-5 text-gray-500" />
             </button>
           </div>
-        </div>
-
+        </div> */}
         <MultipleRestaurantMap restaurants={filteredRestaurants} />
       </div>
     </div>
