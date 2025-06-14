@@ -11,6 +11,7 @@ import { getAiResponse } from "@/lib/apis/ai/ai";
 import { ErrorToast } from "@/utils/ValidationToast";
 import { useChatContext } from "@/contexts/AuthContext";
 import Navbar from "@/components/navbar/Navbar";
+import PrivateRoute from "@/components/private-route/PrivateRoute";
 
 
 const bgImage = {
@@ -18,6 +19,7 @@ const bgImage = {
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   height: '90vh',
+  opacity: 0.7
 };
 
 const formatMessage = (content) => {
@@ -59,7 +61,7 @@ const Home = () => {
     if (chatHistory.length > 0) {
       setIsChatted(true);
     }
-  }, [chatHistory]);
+  },);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
@@ -106,7 +108,6 @@ const Home = () => {
     aiMutation.mutate({ message: text });
   };
 
-
   const handleExplore = () => {
     if (!clickedOnce) {
       setClickedOnce(true);
@@ -115,11 +116,12 @@ const Home = () => {
       router.push('/ai-picks');
     }
   }
-
+  
   return (
     <>
+    <PrivateRoute>
     <Navbar/>
-      <div className="flex flex-col">
+      <div className='flex flex-col'>
         {!clickedOnce && (
           <div className="flex flex-col items-center justify-center flex-grow py-10">
             <div className="relative mb-4">
@@ -208,6 +210,7 @@ const Home = () => {
           </div>
         )}
       </div>
+      </PrivateRoute>
     </>
   )
 }

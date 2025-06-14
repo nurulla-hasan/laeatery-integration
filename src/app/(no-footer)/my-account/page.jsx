@@ -21,6 +21,7 @@ const AccountPage = () => {
 
   const handleUpdateSuccess = () => {
     setActiveView("details");
+    queryClient.invalidateQueries(["me"]);
   };
 
   const handlePasswordChangeSuccess = () => {

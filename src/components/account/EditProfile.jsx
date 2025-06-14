@@ -37,14 +37,17 @@ const EditProfile = ({ userData, onUpdate, onCancel }) => {
           email: response.data.data.email || response.data.data.authId?.email,
           phone: response.data.data.phone_number,
         })
+        
       } else {
         ErrorToast(response.data.message || 'Failed to update profile.')
       }
     },
     onError: (error) => {
-      console.error("Profile update error:", error)
+      // console.error("Profile update error:", error)
       const errorMessage = error.response?.data?.message || 'An unexpected error occurred during profile update.'
-      ErrorToast(errorMessage)
+        if (errorMessage === "Not Found") {
+          ErrorToast("Something went wrong")
+        }
     },
   })
 

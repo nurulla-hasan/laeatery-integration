@@ -4,9 +4,7 @@ import { Toaster } from "react-hot-toast";
 import RootLayoutClient from "./RootLayoutClient";
 import { Inter, Poltawski_Nowy } from 'next/font/google'
 import { AuthProvider } from "@/contexts/AuthContext";
-import PrivateRoute from "@/components/private-route/PrivateRoute";
 import NextTopLoader from "nextjs-toploader";
-
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,9 +39,7 @@ export default function RootLayout({ children }) {
         <div className={`${inter.variable} ${poltawski.variable}`}>
           <RootLayoutClient>
             <AuthProvider>
-              {/* <PrivateRoute> */}
                 {children}
-              {/* </PrivateRoute> */}
             </AuthProvider>
           </RootLayoutClient>
         </div>

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Loading from "../loading/Loading";
 
 
-const PrivateRoute = ({ children }) => {
+const PublicRoute = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [isLoadingToken, setIsLoadingToken] = useState(true);
@@ -19,8 +19,8 @@ const PrivateRoute = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!isLoadingToken && !token) {
-      router.replace("/auth/login");
+    if (!isLoadingToken && token) {
+      router.replace("/");
     }
   }, [isLoadingToken, token, router]);
 
@@ -32,10 +32,10 @@ const PrivateRoute = ({ children }) => {
     );
   }
 
-  if (token) {
+  if (!token) {
     return <>{children}</>;
   }
   return null;
 };
 
-export default PrivateRoute;
+export default PublicRoute;
